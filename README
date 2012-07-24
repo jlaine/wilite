@@ -1,1 +1,7 @@
-Simple strophe-based XMPP client.
+wilite is a simple mobile XMPP client.
+
+To start using it, create a config.js file containing the information
+for your XMPP server:
+
+var WILITE_BOSH_URL = 'http://yourserver:5280/http-bind/';
+var WILITE_DOMAIN = 'yourdomain.org';
