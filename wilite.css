@@ -1,0 +1,135 @@
+/* generic */
+
+.contact-name {
+    float: left;
+    margin-left: 48px;
+    margin-top: 4px;
+    display: block;
+}
+
+.contact-photo {
+    float: left;
+    margin-left: 4px;
+    margin-top: 4px;
+    max-height: 32px;
+    max-width: 32px;
+}
+
+.own-contact {
+    float: left;
+    margin-left: 8px;
+    margin-top: 8px;
+}
+
+.own-contact .contact-status {
+    float: left;
+    margin-right: 8px;
+}
+
+.own-contact .connection-state {
+    float: left;
+    margin-top: 4px;
+}
+
+/* status pills */
+
+.contact-status {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+}
+
+*[data-status="available"] .contact-status {
+    border: 1px solid #006400;
+    background-color: #64ff64;
+    background-image: -ms-linear-gradient(top, #64FF64 0%, #009600 100%);
+    background-image: -moz-linear-gradient(top, #64FF64 0%, #009600 100%);
+    background-image: -o-linear-gradient(top, #64FF64 0%, #009600 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #64FF64), color-stop(1, #009600));
+    background-image: -webkit-linear-gradient(top, #64FF64 0%, #009600 100%);
+    background-image: linear-gradient(top, #64FF64 0%, #009600 100%);
+}
+
+*[data-status="away"] .contact-status {
+    border: 1px solid #c08428;
+    background-color: #ffff50;
+    background-image: -ms-linear-gradient(top, #FFFF50 0%, #EECA30 100%);
+    background-image: -moz-linear-gradient(top, #FFFF50 0%, #EECA30 100%);
+    background-image: -o-linear-gradient(top, #FFFF50 0%, #EECA30 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFF50), color-stop(1, #EECA30));
+    background-image: -webkit-linear-gradient(top, #FFFF50 0%, #EECA30 100%);
+    background-image: linear-gradient(top, #FFFF50 0%, #EECA30 100%);
+}
+
+*[data-status="busy"] .contact-status {
+    border: 1px solid #640000;
+    background-color: #ff6464;
+    background-image: -ms-linear-gradient(top, #FF6464 0%, #DD0000 100%);
+    background-image: -moz-linear-gradient(top, #FF6464 0%, #DD0000 100%);
+    background-image: -o-linear-gradient(top, #FF6464 0%, #DD0000 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FF6464), color-stop(1, #DD0000));
+    background-image: -webkit-linear-gradient(top, #FF6464 0%, #DD0000 100%);
+    background-image: linear-gradient(top, #FF6464 0%, #DD0000 100%);
+} 
+
+*[data-status="offline"] .contact-status {
+    border: 1px solid #444444;
+    background-color: #dfdfdf;
+    background-image: -ms-linear-gradient(top, #DFDFDF 0%, #777777 100%);
+    background-image: -moz-linear-gradient(top, #DFDFDF 0%, #777777 100%);
+    background-image: -o-linear-gradient(top, #DFDFDF 0%, #777777 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #DFDFDF), color-stop(1, #777777));
+    background-image: -webkit-linear-gradient(top, #DFDFDF 0%, #777777 100%);
+    background-image: linear-gradient(top, #DFDFDF 0%, #777777 100%);
+}
+
+/* contact page */
+
+#contact-list li a {
+    padding: 9px;
+    min-height: 23px;
+}
+
+#contact-list .contact-status {
+    float: right;
+    margin-right: 32px;
+}
+
+#contact-page li[data-status="offline"] {
+    display: none;
+}
+
+/* message page */
+
+#talk-page .ui-li-divider {
+    padding: 9px;
+    min-height: 23px;
+}
+
+#talk-page .message-date {
+    float: right;
+    margin-top: 4px;
+}
+
+
+#talk-page .ui-footer input.message-input {
+    float: left;
+    margin: 0;
+    padding: 6px;
+    width: 100px;
+    background-color: #eeeeee;
+    color: black;
+    text-shadow: none;
+}
+
+#talk-page .ui-footer {
+    padding: 4px;
+}
+
+#talk-page .ui-footer .ui-btn {
+    float: right;
+    margin: 0;
+}
+
+
