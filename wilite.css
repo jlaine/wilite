@@ -96,6 +96,11 @@
     margin-right: 32px;
 }
 
+#contact-list .contact-messages {
+    float: right;
+    margin-right: 32px;
+}
+
 #contact-page li[data-status="offline"] {
     display: none;
 }

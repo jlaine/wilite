@@ -104,6 +104,11 @@ function addContact(contact) {
         roster.append(contact);
 }
 
+// find the DOM node for the given contact
+function findContact(jid) {
+    return $('#contact-list li[data-jid="' + jid + '"]');
+}
+
 // request vCard
 function updateContact(contact) {
     var jid = contact.attr('data-jid');
@@ -145,7 +150,7 @@ function addMessage(page, body, date, jid) {
         name = connection.ownName;
         photo = connection.ownPhoto;
     } else {
-        var contact = $('#contact-list li[data-jid="' + jid + '"]');
+        var contact = findContact(jid);
         name = contact.find('.contact-name').text();
         photo = contact.find('.contact-photo').attr('src');
     }
@@ -212,26 +217,34 @@ function fetchMessages(page, jid) {
 function onMessage(stanza) {
     var message = $(stanza);
 
-    var jid = Strophe.getBareJidFromJid(message.attr('from'));
-
-    // handle date
-    var date = new Date();
-    var x = message.find('x');
-    if (x.length > 0) {
-        var stamp = x.attr('stamp');
-        date.setUTCFullYear(stamp.slice(0, 4));
-        date.setUTCMonth(stamp.slice(4, 6) - 1); // NOTE : month is 0-11 in JS
-        date.setUTCDate(stamp.slice(6, 8));
-        date.setUTCHours(stamp.slice(9, 11));
-        date.setUTCMinutes(stamp.slice(12, 14));
-        date.setUTCSeconds(stamp.slice(15, 17));
-    }
-
     var body = message.find('body').text();
+    var jid = Strophe.getBareJidFromJid(message.attr('from'));
     if (body) {
-        addMessage($('#talk-page'), body, date, jid);
-    }
+        // handle date
+        var date = new Date();
+        var x = message.find('x');
+        if (x.length > 0) {
+            var stamp = x.attr('stamp');
+            date.setUTCFullYear(stamp.slice(0, 4));
+            date.setUTCMonth(stamp.slice(4, 6) - 1); // NOTE : month is 0-11 in JS
+            date.setUTCDate(stamp.slice(6, 8));
+            date.setUTCHours(stamp.slice(9, 11));
+            date.setUTCMinutes(stamp.slice(12, 14));
+            date.setUTCSeconds(stamp.slice(15, 17));
+        }
 
+        var talk_page = $('#talk-page');
+        if (talk_page.attr('data-jid') == jid) {
+            // talk page is open, add message
+            addMessage(talk_page, body, date, jid);
+        } else {
+            // talk page is closed, make a note of missed message
+            var contact = findContact(jid);
+            var messages = contact.find('.contact-messages');
+            messages.text(parseInt(messages.text()) + 1);
+            messages.show();
+        }
+    }
     return true;
 }
 
@@ -253,7 +266,7 @@ function onPresence(stanza) {
     var presence = $(stanza);
     var roster = $('#contact-list');
     var jid = Strophe.getBareJidFromJid(presence.attr('from'));
-    var contact = $('#contact-list li[data-jid="' + jid + '"]');
+    var contact = findContact(jid);
 
     var type = presence.attr('type');
     if (type == 'unavailable') {
@@ -337,6 +350,7 @@ function doConnect(username, password) {
                     addContact($('<li data-jid="' + jid +'" data-name-final="' + nameFinal + '" data-status="offline"><a href="#talk-page?jid=' + jid + '">'
                         + '<img class="contact-photo" src="' + photo + '"/>'
                         + '<span class="contact-name">' + name + '</span>'
+                        + '<span class="contact-messages ui-li-count" style="display:none">0</span>'
                         + '<span class="contact-status"></span>'
                         + '</a></li>'));
 
@@ -488,9 +502,14 @@ $(document).delegate('#talk-page', 'pageshow', function() {
     var jid = $.mobile.pageData.jid;
     var page = $('#talk-page');
 
+    // clear missed messages
+    var contact = findContact(jid);
+    var messages = contact.find('.contact-messages');
+    messages.hide();
+    messages.text('0');
+
     if (page.attr('data-jid') != jid) {
         // FIXME: we need to be able to do this before connecting
-        var contact = $('#contact-list li[data-jid="' + jid + '"]');
         var name = contact.find('.contact-name').text();
         page.find('h1').text('Talking with ' + name);
         page.attr('data-jid', jid);
