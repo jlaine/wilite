@@ -1,7 +1,13 @@
-wilite is a simple mobile XMPP client.
+wilite is a simple mobile XMPP client written in HTML and Javascript.
+
+It uses the Strophe.js [1] library to establish XMPP connections over HTTP,
+and the jQuery Mobile [2] framework for the user interface.
 
 To start using it, create a config.js file containing the information
 for your XMPP server:
 
 var WILITE_BOSH_URL = 'http://yourserver:5280/http-bind/';
 var WILITE_DOMAIN = 'yourdomain.org';
+
+[1] http://strophe.im/strophejs/
+[2] http://jquerymobile.com/
