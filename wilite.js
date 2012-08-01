@@ -445,8 +445,12 @@ $(document).delegate("#connect-page", "pageinit", function() {
     button.click(function() {
         var username = page.find('#username').val();
         var password = page.find('#password').val();
-        doConnect(username, password);
-        $.mobile.changePage('#contact-page');
+        if (username.indexOf('@') >= 0) {
+            page.find('#username').val(username.substr(0, username.indexOf('@')));
+        } else if (username && password) {
+            doConnect(username, password);
+            $.mobile.changePage('#contact-page');
+        }
     });
     page.keypress(function(e) {
         if (e.keyCode == 13) {
