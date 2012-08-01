@@ -1,3 +1,8 @@
+var ns_disco_info = 'http://jabber.org/protocol/disco#info';
+var ns_disco_items = 'http://jabber.org/protocol/disco#items';
+var ns_ping = 'urn:xmpp:ping';
+var ns_archive = 'urn:xmpp:archive';
+
 var connection = new Strophe.Connection(WILITE_BOSH_URL);
 connection.connected = false;
 connection.initialised = false;
@@ -184,7 +189,7 @@ function fetchMessages(page, jid) {
     clearMessages(page);
     var start = new Date((new Date()).valueOf() - 365 * 24 * 3600 * 1000);
     var iq = $iq({id: connection.stanzaId(), type: 'get'})
-        .c('list', {with: jid, start: serializeDate(start), xmlns: 'urn:xmpp:archive'})
+        .c('list', {with: jid, start: serializeDate(start), xmlns: ns_archive})
             .c('set', {xmlns: 'http://jabber.org/protocol/rsm'})
                 .c('before').up()
                 .c('max', {}, '2');
@@ -192,7 +197,7 @@ function fetchMessages(page, jid) {
         $(stanza).find('list chat').each(function() {
             var chat = $(this);
             var iq = $iq({id: connection.stanzaId(), type: 'get'})
-                .c('retrieve', {with: chat.attr('with'), start: chat.attr('start'), xmlns: 'urn:xmpp:archive'})
+                .c('retrieve', {with: chat.attr('with'), start: chat.attr('start'), xmlns: ns_archive})
                     .c('set', {xmlns: 'http://jabber.org/protocol/rsm'});
             connection.sendIQ(iq.tree(), function(stanza) {
                 var chat = $(stanza).find('chat');
@@ -210,6 +215,36 @@ function fetchMessages(page, jid) {
             });
         });
     });
+}
+
+/** Handles an incoming XEP-0030: Service Discovery info request.
+ */
+function onDiscoInfo(stanza) {
+    var iq = $(stanza);
+
+    // send reply
+    var reply = $iq({to: iq.attr('from'), id: iq.attr('id'), type: 'result'})
+        .c('query', {xmlns: ns_disco_info})
+            .c('feature', {'var': ns_disco_info}).up()
+            .c('feature', {'var': ns_disco_items}).up()
+            .c('feature', {'var': ns_archive}).up()
+            .c('feature', {'var': ns_ping});
+    connection.send(reply.tree());
+
+    return true;
+}
+
+/** Handles an incoming XEP-0030: Service Discovery items request.
+ */
+function onDiscoItems(stanza) {
+    var iq = $(stanza);
+
+    // send reply
+    var reply = $iq({to: iq.attr('from'), id: iq.attr('id'), type: 'result'})
+        .c('query', {xmlns: ns_disco_items});
+    connection.send(reply.tree());
+
+    return true;
 }
 
 /** Handles an incoming message.
@@ -311,8 +346,10 @@ function doConnect(username, password) {
             localStorage.setItem("password", password);
 
             // setup handlers
+            connection.addHandler(onDiscoInfo, ns_disco_info, 'iq', 'get', null,  null);
+            connection.addHandler(onDiscoItems, ns_disco_items, 'iq', 'get', null,  null);
             connection.addHandler(onMessage, null, 'message', null, null,  null);
-            connection.addHandler(onPing, 'urn:xmpp:ping', 'iq', 'get', null,  null);
+            connection.addHandler(onPing, ns_ping, 'iq', 'get', null,  null);
             connection.addHandler(onPresence, null, 'presence', null, null,  null);
 
             // request roster
