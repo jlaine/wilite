@@ -250,7 +250,7 @@ function onMessage(stanza) {
 
 /** Handles an incoming XEP-0199 ping.
  */
-function onPing(ping) {
+function onPing(stanza) {
     var iq = $(stanza);
 
     // send reply
